@@ -8,5 +8,6 @@ int main()
     string first_name; // define a string type variable named "first_name"
     cin >> first_name; // read input into defined variable "first_name"
     cout << "Hello, " << first_name << "!\n" << endl; // output Hello + first_name
+    cout << "first_name" << " is " << first_name; // difference between "first_name" and first_name
     return 0;
 }
