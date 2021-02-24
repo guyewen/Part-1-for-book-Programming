@@ -9,7 +9,7 @@ int main()
     string second;
     cin >> first >> second;
     if(first == second)
-        cout << "That's the same name twice" << endl;
+        cout << "That's the same name!" << endl;
     if(first < second)
         cout << first << " is alphabetically before " << second << endl;
     if(first > second)
