@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-class Token {
+class Token { // user defined type token
 public:
     char kind;        // what kind of token
     double value;     // for numbers: a value
@@ -44,7 +44,7 @@ Token get_token()    // read a token from cin
 */
 //------------------------------------------------------------------------------
 
-class Token_stream {
+class Token_stream { // user defined type token with two funtions
 public:
     Token get();            // get a Token
     void putback(Token t);  // put a Token back
@@ -62,7 +62,7 @@ void Token_stream::putback(Token t)
 
 Token Token_stream::get()
 {
-    if (full) {
+    if (full) { // if there is a token putback as buffer, first read this token
         full = false;
         return buffer;
     }
@@ -115,6 +115,9 @@ double term();        // read and evaluate a Term
 
 //------------------------------------------------------------------------------
 
+// Read a number or a (...), e.g 1+2*3-(2+1)
+// The first 3 number, 1, 2, 3 will go to case '8'
+// When ( is read, the code knows it is also a primary, then it will look for an expresion, e.g. 2+1, then look for a ).
 double primary()     // read and evaluate a Primary
 {
     Token t = ts.get();
@@ -167,6 +170,8 @@ return 2;
 
 //------------------------------------------------------------------------------
 
+// calculate all the adjacent + and -, e.g. 1+2+3-4*5+6*3/8
+// we have 5 terms in the example above, 1, 2, 3, 4*5 and 6*3/8
 double expression()
 {
     double left = term();      // read and evaluate a Term
@@ -174,11 +179,11 @@ double expression()
     while(true) {
         switch(t.kind) {
         case '+':
-            left += term();    // evaluate Term and add
+            left += term();    // evaluate another Term and add
             t = ts.get();
             break;
         case '-':
-            left -= term();    // evaluate Term and subtract
+            left -= term();    // evaluate another Term and subtract
             t = ts.get();
             break;
         default:
@@ -190,6 +195,10 @@ double expression()
 
 //------------------------------------------------------------------------------
 
+// calculate all the adjacent * and /, e.g. 1+2+3-4*5+6*3/8
+// we have 5 terms in the example above, 1, 2, 3, 4*5 and 6*3/8
+// First 3 will go to default anre return value directly
+// 4*5 and 6*3/8 contains 2 and 3 primarys and will be first calculated and then returned as a term
 double term()
 {
     double left = primary();
