@@ -1,4 +1,4 @@
-// Example for Ch 7.8, Variable, p. 242 - 250
+// Example for Ch 7.8, Variable, p. 242 - 250, also added sqrt and pow function
 // "Software - Principles and Practice using C++" by Bjarne Stroustrup
 //
 
@@ -17,6 +17,14 @@ const char let = 'L'; // declaration token
 const string declkey = "let"; // declaration keyword
 const char set = 'S'; // declaration token
 const string setkey = "set"; // declaration keyword
+
+// for sqrt function in drill 07
+const string sqrt_key = "sqrt";
+const char squrt = 'Q';
+
+// for pow function in drill 09
+const string pow_key = "pow";
+const char power = 'P';
 
 
 class Token { // user defined type token, modified for Ch7.8 on p.248
@@ -98,6 +106,7 @@ Token Token_stream::get()
     case '/':
     case '%': // for Exp231, remainder
     case '=': // for Ch7.8
+    case ',': // for pow function, drill 09
         return Token{ch};   // let each character represent itself
     case '.':
     case '0':
@@ -129,6 +138,12 @@ Token Token_stream::get()
             }
             if (s == setkey) {
                 return Token{set}; // declaration keyword
+            }
+            if (s == sqrt_key) { // for sqrt function in drill 07
+                return Token{squrt};
+            }
+            if (s == pow_key) { // for pow function in drill 09
+                return Token{power};
             }
             return Token{name,s};
         }
@@ -237,6 +252,57 @@ double primary()     // read and evaluate a Primary
         return - primary();
     case '+':            // Added for Exp230, handle negative number
         return primary();
+    case squrt:  // for drill 07, sqrt function
+    {
+        //get next char after 'sqrt' if not '(' then error
+        t = ts.get();
+        if (t.kind != '(') {
+            error("'(' expected");
+        }
+
+        //if expression is less than 0 print an error
+        double d = expression();
+        if (d < 0)
+            error("Cannot square root negative integers");
+
+        //get next char after expression, if not ')' then error
+        t = ts.get();
+        if (t.kind != ')')
+            error("')' expected");
+
+        //return square root of the expression taken from the tokenstream
+        return sqrt(d);
+    }
+    case power: // for drill 09, power function, pow(x,i) = x^i
+    {
+        //get next char after 'sqrt' if not '(' then error
+        t = ts.get();
+        if (t.kind != '(') {
+            error("'(' expected");
+        }
+
+        double x = expression(); // read or calculate the first parameter x in pow(x,i)
+
+        //get next char after 'expression' if not ',' then error
+        t = ts.get();
+        if (t.kind != ',')
+            error("',' expected");
+
+        double i = expression();  // read or calculate the second parameter i in pow(x,i)
+
+        // test if parameter i is integer, if not error message, optional
+        if (i - floor(i) != 0) {
+            error("i parameter must be integer for pow(x,i)");
+        }
+
+        //get next char after expression, if not ')' then error
+        t = ts.get();
+        if (t.kind != ')')
+            error("')' expected");
+
+        // return expression using pow() from <cmath>
+        return pow(x, i);
+    }
     default:
         error("primary expected");
     }
