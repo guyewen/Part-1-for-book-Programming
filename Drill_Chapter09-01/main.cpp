@@ -9,7 +9,7 @@
 using namespace std; // for cout & cin
 
 //---------------------------------------------------------------------------------------------------------
-// Define tyep Date with struct
+// Define Class Date with struct
 struct Date{
     int y; // year
     int m; // month
